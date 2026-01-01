@@ -1,0 +1,59 @@
+<div id="game-container">
+    <h2 id="player-name">{{ request.user.username }}</h2>
+    
+    <div id="group-banner" style="display:none; background: #e0f7fa; padding: 10px;">
+        <strong>Group Mode:</strong> You are playing with <span id="partner-list"></span>
+    </div>
+
+    <div id="question-box">
+        <h3 id="node-text">Waiting for the GM to start...</h3>
+        <div id="choices-container">
+            </div>
+    </div>
+</div>
+
+<script>
+    const gameSocket = new WebSocket('ws://' + window.location.host + '/ws/game/{{ room_id }}/');
+
+    gameSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+
+        // If I am in a group, only show choices if I am the 'leader' 
+        // or show a 'waiting' message until a group vote is cast.
+        if (data.in_group) {
+            const isLeader = data.group_members[0] === myUsername; 
+            if (!isLeader) {
+                document.getElementById('choices-container').innerHTML = 
+                    "<p>Your group leader is deciding...</p>";
+                return;
+            }
+        }
+        
+        // Update the Question text
+        document.getElementById('node-text').innerText = data.node_text;
+
+        // Clear and rebuild choice buttons
+        const container = document.getElementById('choices-container');
+        container.innerHTML = '';
+        
+        data.choices.forEach(choice => {
+            const btn = document.createElement('button');
+            btn.innerText = choice.text;
+            btn.onclick = () => sendChoice(choice.id);
+            container.appendChild(btn);
+        });
+
+        // Handle Group UI
+        if (data.in_group) {
+            document.getElementById('group-banner').style.display = 'block';
+            document.getElementById('partner-list').innerText = data.group_members.join(', ');
+        }
+    };
+
+    function sendChoice(choiceId) {
+        gameSocket.send(json.stringify({
+            'action': 'make_choice',
+            'choice_id': choiceId
+        }));
+    }
+</script>
