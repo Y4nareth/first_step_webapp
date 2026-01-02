@@ -1,10 +1,18 @@
-<div id="statusBox" style="width: 100px; height: 100px; border: 1px solid black;"></div>
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+    </head>
+    <body>
+        <div id="statusBox"></div>
+    </body>
+    <script>
+        const socket = new WebSocket('ws://' + window.location.host + '/ws/game/');
 
-<script>
-    const socket = new WebSocket('ws://' + window.location.host + '/ws/game/');
-
-    socket.onmessage = function(e) {
-        const data = JSON.parse(e.data);
-        document.getElementById('statusBox').style.backgroundColor = data.color;
-    };
-</script>
+        socket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            document.getElementById('statusBox').style.backgroundColor = data.color;
+        };
+    </script>
+</html>

@@ -1,15 +1,24 @@
-<select id="colorPicker">
-    <option value="green">Green</option>
-    <option value="blue">Blue</option>
-    <option value="red">Red</option>
-</select>
+{% load static %}
+<!DOCTYPE html>
 
-<script>
-    const socket = new WebSocket('ws://' + window.location.host + '/ws/game/');
+<html>
+    <head>
+        <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+    </head>
+    <body>
+        <select id="colorPicker">
+            <option value="green">Green</option>
+            <option value="blue">Blue</option>
+            <option value="red">Red</option>
+        </select>
+    </body>
+    <script>
+        const socket = new WebSocket('ws://' + window.location.host + '/ws/game/');
 
-    document.getElementById('colorPicker').onchange = function(e) {
-        socket.send(JSON.stringify({
-            'color': e.target.value
-        }));
-    };
-</script>
+        document.getElementById('colorPicker').onchange = function(e) {
+            socket.send(JSON.stringify({
+                'color': e.target.value
+            }));
+        };
+    </script>
+</html>
