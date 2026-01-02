@@ -1,41 +1,10 @@
-<style>
-    .player-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .player-card { border: 2px solid #333; padding: 15px; border-radius: 8px; }
-    .node-path { color: #666; font-size: 0.8em; }
-</style>
-
-<h1>GM Control Panel</h1>
-<div class="player-grid" id="gm-dashboard">
-    </div>
+<div id="statusBox" style="width: 100px; height: 100px; border: 1px solid black;"></div>
 
 <script>
-    const gmSocket = new WebSocket('ws://' + window.location.host + '/ws/game/{{ room_id }}/');
+    const socket = new WebSocket('ws://' + window.location.host + '/ws/game/');
 
-    gmSocket.onmessage = function(e) {
+    socket.onmessage = function(e) {
         const data = JSON.parse(e.data);
-        const player = data.player_name;
-
-        // Find or Create the player's card
-        let card = document.getElementById(`card-${player}`);
-        if (!card) {
-            card = createPlayerCard(player);
-            document.getElementById('gm-dashboard').appendChild(card);
-        }
-
-        // Update the card with the latest info
-        card.querySelector('.current-node').innerText = data.node_text;
-        card.querySelector('.status').innerText = data.in_group ? `In Group: ${data.group_id}` : 'Solo';
+        document.getElementById('statusBox').style.backgroundColor = data.color;
     };
-
-    function createPlayerCard(name) {
-        const div = document.createElement('div');
-        div.id = `card-${name}`;
-        div.className = 'player-card';
-        div.innerHTML = `
-            <h3>${name}</h3>
-            <p><strong>Location:</strong> <span class="current-node">...</span></p>
-            <p><strong>Status:</strong> <span class="status">Joining...</span></p>
-        `;
-        return div;
-    }
 </script>
