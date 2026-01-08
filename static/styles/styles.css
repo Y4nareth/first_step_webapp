@@ -1,5 +1,33 @@
+body {
+    background-color: #00001a;
+    margin: 0;
+    min-height: 100vh;
+    position: relative; /* Required for the absolute child */
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Puts it behind your content */
+    
+    /* Your Logo Settings */
+    background-image: url("../images/cosmere_rpg_logo.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+
+    /* The Gold Filter - only applies to the logo now! */
+    filter: invert(85%) sepia(35%) saturate(1000%) hue-rotate(5deg) brightness(105%) contrast(105%);
+}
+
 #statusBox {
     width: 100px;
     height: 100px;
-    border: 1px solid black;
+    border: 1px solid rgb(0, 0, 0);
+    position: relative; 
+    color: white;
 }
